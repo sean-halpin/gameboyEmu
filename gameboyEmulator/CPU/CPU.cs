@@ -11,7 +11,7 @@ namespace gameboyEmulator.CPU
         //accumulator
         Register_8_Bit a;
         //flag
-        Register_8_Bit f;
+        Register_8_Bit_Flag f;
         //general
         Register_8_Bit b; Register_8_Bit c;
         Register_16_Bit bc;
