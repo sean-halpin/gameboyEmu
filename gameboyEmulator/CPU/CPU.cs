@@ -16,7 +16,7 @@ namespace gameboyEmulator.CPU
         Register_8_Bit b; Register_8_Bit c;
         Register_16_Bit bc;
         Register_8_Bit d; Register_8_Bit e;
-        Register_16_Bit dc;
+        Register_16_Bit de;
         Register_8_Bit h; Register_8_Bit l;
         Register_16_Bit hl;
         //program counter
