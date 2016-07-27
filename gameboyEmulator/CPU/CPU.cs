@@ -27,7 +27,7 @@ namespace gameboyEmulator.CPU
         public CPU()
         {
             a = new Register_8_Bit("a");
-            f = new Register_8_Bit("f");
+            f = new Register_8_Bit_Flag("f");
             b = new Register_8_Bit("b");
             c = new Register_8_Bit("c");
             Register_16_Bit bc = new Register_16_Bit(b, c);

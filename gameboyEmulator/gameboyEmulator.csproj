@@ -46,6 +46,7 @@
     <Compile Include="CPU\OpCodes_8_Bit.cs" />
     <Compile Include="CPU\Register_8_Bit.cs" />
     <Compile Include="CPU\Register_16_Bit.cs" />
+    <Compile Include="CPU\Register_8_Bit_Flag.cs" />
     <Compile Include="GPU\GPU.cs" />
     <Compile Include="GUI\GUI.cs" />
     <Compile Include="Joystick\Input.cs" />
