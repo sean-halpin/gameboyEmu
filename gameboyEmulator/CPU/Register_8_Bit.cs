@@ -16,23 +16,5 @@ namespace gameboyEmulator.CPU
             Name = name;
             Value = 0;
         }
-
-        public static Register_8_Bit operator <<(Register_8_Bit r1, int operand)
-        {
-            r1.Value = r1.Value << operand;
-            return r1;
-        }
-
-        public static Register_8_Bit operator >>(Register_8_Bit r1, int operand)
-        {
-            r1.Value = r1.Value >> operand;
-            return r1;
-        }
-
-        public static Register_8_Bit operator &(Register_8_Bit r1, Register_8_Bit r2)
-        {
-            r1.Value = r1.Value & r2.Value;
-            return r1;
-        }
     }
 }

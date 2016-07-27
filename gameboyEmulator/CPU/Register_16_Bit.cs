@@ -14,7 +14,7 @@ namespace gameboyEmulator.CPU
         public Register_16_Bit(Register_8_Bit r1, Register_8_Bit r2)
         {
             Name = r1.Name + r2.Name;
-            Value = ((r1 << 8) & r2).Value;
+            Value = (r1.Value << 8) & r2.Value;
         }
     }
 }
