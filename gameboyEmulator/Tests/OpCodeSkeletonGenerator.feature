@@ -254,7 +254,7 @@ Scenario: Generate Opcode Cases
 		| PUSH AF     | 1     | 16     | - - - - |
 		| OR d8       | 2     | 8      | Z 0 0 0 |
 		| RST 30H     | 1     | 16     | - - - - |
-		| LD HL,SP+r8 | 2     | 12     | 0 0 H C |
+		| LD HL,SP,r8 | 2     | 12     | 0 0 H C |
 		| LD SP,HL    | 1     | 8      | - - - - |
 		| LD A,(a16)  | 3     | 16     | - - - - |
 		| EI          | 1     | 4      | - - - - |

@@ -1318,7 +1318,7 @@ this.ScenarioSetup(scenarioInfo);
                         "16",
                         "- - - -"});
             table1.AddRow(new string[] {
-                        "LD HL,SP+r8",
+                        "LD HL,SP,r8",
                         "2",
                         "12",
                         "0 0 H C"});

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using gameboyEmulator.CPU;
 using TechTalk.SpecFlow;
 
 namespace gameboyEmulator.Tests
@@ -38,32 +39,79 @@ namespace gameboyEmulator.Tests
             var list = _currentContext.Get<List<OpCode>>();
             foreach (var opCode in list)
             {
-                var split = opCode._mneumonic.Split(' ');
+                var split = opCode._mneumonic.Replace("(", " ").Replace(")", " ").Replace(",", " ").Split(' ').ToList();
                 opCode.method = split[0];
-                if (split.Length > 1)
+                foreach (var arg in split.Skip(1).ToList())
                 {
-                    opCode.argTypes = split[1].Replace("(", "").Replace(")", "")
-                        .Replace("AF", "R16")
-                        .Replace("BC", "R16")
-                        .Replace("DE", "R16")
-                        .Replace("HL", "R16")
-                        .Replace("SP", "R16")
-                        .Replace("PC", "R16")
-                        .Replace("A", "R8")
-                        .Replace("B", "R8")
-                        .Replace("C", "R8")
-                        .Replace("D", "R8")
-                        .Replace("E", "R8")
-                        .Replace("H", "R8")
-                        .Replace("L", "R8")
-                        .Replace("F", "R8F")
-                        ;
-                }
-                else
-                {
-                    opCode.argTypes = "";
+                    if (!string.IsNullOrEmpty(arg) && !opCode._opCodeHex.Equals(0x38.ToString("X2")))
+                        opCode.args.Add(ConvertStringToArg(arg));
                 }
             }
+        }
+
+        private static KeyValuePair<Type, string> ConvertStringToArg(string arg)
+        {
+            return string.IsNullOrEmpty(arg)
+                ? new KeyValuePair<Type, string>(null, null)
+                : new KeyValuePair<Type, string>(GetArgType(arg), arg);
+        }
+
+        private static Type GetArgType(string s)
+        {
+            Type thisArgType = null;
+            switch (s)
+            {
+                case "A":
+                case "B":
+                case "C":
+                case "D":
+                case "E":
+                case "H":
+                case "L":
+                    thisArgType = typeof(Register_8_Bit);
+                    break;
+                case "F":
+                    thisArgType = typeof(Register_8_Bit_Flag);
+                    break;
+                case "AF":
+                case "BC":
+                case "DE":
+                case "HL":
+                case "HL+":
+                case "HL-":
+                case "SP":
+                case "PC":
+                case "d16":
+                case "d8":
+                case "a16":
+                case "a8":
+                case "r8":
+                    thisArgType = typeof(Register_16_Bit);
+                    break;
+                case "NZ":
+                case "Z":
+                case "NC":
+                    //case "C":
+                    thisArgType = typeof(Register_8_Bit_Flag);
+                    break;
+                case "0":
+                case "00H":
+                case "08H":
+                case "18H":
+                case "28H":
+                case "38H":
+                case "10H":
+                case "20H":
+                case "30H":
+                    thisArgType = typeof(int);
+                    break;
+                case "CB":
+                    thisArgType = typeof(OpCode);
+                    break;
+                default:
+                    throw new NotImplementedException(s);
+            }
+            return thisArgType;
         }
     }
 
@@ -76,7 +124,7 @@ namespace gameboyEmulator.Tests
         public string _flags;
 
         public string method;
-        public string argTypes;
+        public List<KeyValuePair<Type, string>> args;
 
         public OpCode(string opHexCode, string m, string length, string cycles, string flags)
         {
@@ -85,6 +133,12 @@ namespace gameboyEmulator.Tests
             _byteLength = length;
             _cycles = cycles;
             _flags = flags;
+            Initializer();
+        }
+
+        private void Initializer()
+        {
+            args = new List<KeyValuePair<Type, string>>();
         }
     }
 }
