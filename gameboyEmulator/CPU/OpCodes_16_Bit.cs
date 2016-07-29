@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace gameboyEmulator.CPU
 {
-    class OpCodes_16_Bit
+    class OpCodes_16_Bit 
     {
     }
 }

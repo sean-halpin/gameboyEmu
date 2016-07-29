@@ -9,12 +9,14 @@ namespace gameboyEmulator.CPU
     class Register_16_Bit
     {
         public string Name { get; set; }
-        public int Value { get; set; }
+        public Register_8_Bit reg1 { get; set; }
+        public Register_8_Bit reg2 { get; set; }
 
         public Register_16_Bit(Register_8_Bit r1, Register_8_Bit r2)
         {
             Name = r1.Name + r2.Name;
-            Value = (r1.Value << 8) & r2.Value;
+            reg1 = r1;
+            reg2 = r2;
         }
     }
 }

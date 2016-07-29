@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace gameboyEmulator.CPU
+namespace gameboyEmulator.ROM
 {
-    class OpCodes_8_Bit
+    class CartROM
     {
 
     }

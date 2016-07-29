@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=3.0.5797.27534, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.0.0\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,6 +43,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TechTalk.SpecFlow, Version=2.1.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpecFlow.2.1.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CPU\CPU.cs" />
@@ -53,10 +61,22 @@
     <Compile Include="Memory\Memory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ROM\CartROM.cs" />
+    <Compile Include="Tests\CommonStepDefinitions.cs" />
+    <Compile Include="Tests\OpCodeSkeletonGenerator.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpCodeSkeletonGenerator.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ROMs\SuperMarioLand2-6GoldenCoins%28USA,Europe%29.gb" />
+    <None Include="packages.config" />
+    <None Include="ROM\SuperMarioLand2-6GoldenCoins%28USA,Europe%29.gb" />
+    <None Include="Tests\OpCodeSkeletonGenerator.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>OpCodeSkeletonGenerator.feature.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
