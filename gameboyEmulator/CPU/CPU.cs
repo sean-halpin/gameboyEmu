@@ -26,11 +26,14 @@ namespace gameboyEmulator.CPU
         //stack pointer
         Register_8_Bit sp;
         //ROM
-        CartROM cartRom;
+        CartROM _cartRom;
+        //OpCodes
+        private OpCodes _opCodes;
 
-        public CPU(CartROM currentRom)
+        public CPU(CartROM currentRom, OpCodes opCodes)
         {
-            cartRom = currentRom;
+            _cartRom = currentRom;
+            _opCodes = opCodes;
             //Create Registers
             a = new Register_8_Bit("a");
             f = new Register_8_Bit_Flag("f");
@@ -50,7 +53,8 @@ namespace gameboyEmulator.CPU
 
         public void BeginExecution()
         {
-
+            while(true)
+            OpCodes.Execute(_cartRom.Next());
         }
     }
 }

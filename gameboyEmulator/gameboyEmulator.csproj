@@ -71,7 +71,7 @@
   <ItemGroup>
     <Compile Include="CPU\CPU.cs" />
     <Compile Include="CPU\OpCodes_16_Bit.cs" />
-    <Compile Include="CPU\OpCodes_8_Bit.cs" />
+    <Compile Include="CPU\OpCodes.cs" />
     <Compile Include="CPU\Register_8_Bit.cs" />
     <Compile Include="CPU\Register_16_Bit.cs" />
     <Compile Include="CPU\Register_8_Bit_Flag.cs" />

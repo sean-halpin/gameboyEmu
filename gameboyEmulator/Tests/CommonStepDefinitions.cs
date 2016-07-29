@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using gameboyEmulator.CPU;
@@ -46,6 +47,13 @@ namespace gameboyEmulator.Tests
                     if (!string.IsNullOrEmpty(arg) && !opCode._opCodeHex.Equals(0x38.ToString("X2")))
                         opCode.args.Add(ConvertStringToArg(arg));
                 }
+            }
+
+            var str = new StringBuilder();
+            foreach (var opCode in list)
+            {
+                str.AppendLine(opCode.toSwitchCase());
+                Debug.WriteLine(opCode.toSwitchCase());
             }
         }
 
@@ -139,6 +147,60 @@ namespace gameboyEmulator.Tests
         private void Initializer()
         {
             args = new List<KeyValuePair<Type, string>>();
+        }
+
+        public string toSwitchCase()
+        {
+            string a = "";
+            var argz = args.Select(arg => arg.Key.Name + "_" + arg.Value + "_");
+            foreach (var argstring in argz)
+            {
+                var genericArg = FindGenericArg(argstring);
+                a += genericArg;
+            }
+            return "case 0x" + _opCodeHex
+                + " : " + method + "_"
+                + a + "() break;";
+        }
+
+        private string FindGenericArg(string argstring)
+        {
+            var genericArg = argstring
+                .Replace("AF", "BB")
+                .Replace("BC", "BB")
+                .Replace("DE", "BB")
+                .Replace("HL+", "BB")
+                .Replace("HL-", "BB")
+                .Replace("HL", "BB")
+                .Replace("SP", "BB")
+                .Replace("PC", "BB")
+                .Replace("d16", "BB")
+                .Replace("d8", "BB")
+                .Replace("a16", "BB")
+                .Replace("a8", "BB")
+                .Replace("r8", "BB")
+                .Replace("NZ", "Cond")
+                .Replace("Z", "Cond")
+                .Replace("NC", "Cond")
+                .Replace("00H", "num")
+                .Replace("08H", "num")
+                .Replace("18H", "num")
+                .Replace("28H", "num")
+                .Replace("38H", "num")
+                .Replace("10H", "num")
+                .Replace("20H", "num")
+                .Replace("30H", "num")
+                .Replace("0", "num")
+                .Replace("CB", "CB")
+                .Replace("A", "b")
+                .Replace("B", "b")
+                .Replace("C", "b")
+                .Replace("D", "b")
+                .Replace("E", "b")
+                .Replace("H", "b")
+                .Replace("L", "b")
+                .Replace("F", "b");
+            return genericArg;
         }
     }
 }

@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace gameboyEmulator.ROM
 {
-    class CartROM
+    public class CartROM
     {
-
+        public int Next()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
