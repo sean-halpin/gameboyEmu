@@ -81,10 +81,10 @@ namespace gameboyEmulator.Tests
                 case "E":
                 case "H":
                 case "L":
-                    thisArgType = typeof(Register_8_Bit);
+                    thisArgType = typeof(R8Bit);
                     break;
                 case "F":
-                    thisArgType = typeof(Register_8_Bit_Flag);
+                    thisArgType = typeof(R8BitFlag);
                     break;
                 case "AF":
                 case "BC":
@@ -99,13 +99,13 @@ namespace gameboyEmulator.Tests
                 case "a16":
                 case "a8":
                 case "r8":
-                    thisArgType = typeof(Register_16_Bit);
+                    thisArgType = typeof(R16Bit);
                     break;
                 case "NZ":
                 case "Z":
                 case "NC":
                     //case "C":
-                    thisArgType = typeof(Register_8_Bit_Flag);
+                    thisArgType = typeof(R8BitFlag);
                     break;
                 case "0":
                 case "00H":

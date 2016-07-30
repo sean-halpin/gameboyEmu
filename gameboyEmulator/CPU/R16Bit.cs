@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace gameboyEmulator.CPU
 {
-    public class Register_16_Bit
+    public class R16Bit
     {
         public string Name { get; set; }
-        public Register_8_Bit h { get; set; }
-        public Register_8_Bit l { get; set; }
+        public R8Bit h { get; set; }
+        public R8Bit l { get; set; }
 
         public int Value
         {
@@ -26,21 +26,21 @@ namespace gameboyEmulator.CPU
             }
         }
 
-        public Register_16_Bit(Register_8_Bit r1, Register_8_Bit r2)
+        public R16Bit(R8Bit r1, R8Bit r2)
         {
             Name = r1.Name + r2.Name;
             h = r1;
             l = r2;
         }
 
-        public Register_16_Bit(string name)
+        public R16Bit(string name)
         {
             this.Name = name;
-            h = new Register_8_Bit(name.ToCharArray()[0].ToString());
-            l = new Register_8_Bit(name.ToCharArray()[1].ToString());
+            h = new R8Bit(name.ToCharArray()[0].ToString());
+            l = new R8Bit(name.ToCharArray()[1].ToString());
         }
 
-        public static Register_16_Bit operator ++(Register_16_Bit reg)
+        public static R16Bit operator ++(R16Bit reg)
         {
             reg.Value++;
             return reg;

@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace gameboyEmulator.CPU
 {
-    public class Register_8_Bit
+    public class R8Bit
     {
         public string Name { get; set; }
         public byte Value { get; set; }
 
-        public Register_8_Bit(string name)
+        public R8Bit(string name)
         {
             Name = name;
             Value = 0;
         }
 
-        public static Register_8_Bit operator ++(Register_8_Bit reg)
+        public static R8Bit operator ++(R8Bit reg)
         {
             reg.Value++;
             return reg;

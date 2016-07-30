@@ -70,9 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CPU\CPU.cs" />
-    <Compile Include="CPU\Register_8_Bit.cs" />
-    <Compile Include="CPU\Register_16_Bit.cs" />
-    <Compile Include="CPU\Register_8_Bit_Flag.cs" />
+    <Compile Include="CPU\R8Bit.cs" />
+    <Compile Include="CPU\R16Bit.cs" />
+    <Compile Include="CPU\R8BitFlag.cs" />
     <Compile Include="Output\PPU\Screen.cs" />
     <Compile Include="Output\GUI\GUI.cs" />
     <Compile Include="Input\Controls.cs" />

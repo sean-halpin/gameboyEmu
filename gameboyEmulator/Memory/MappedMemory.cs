@@ -16,12 +16,12 @@ namespace gameboyEmulator.Memory
             this._memory = memory;
         }
 
-        public int ReadByte(Register_16_Bit PC)
+        public int ReadByte(R16Bit PC)
         {
             throw new NotImplementedException(typeof(MappedMemory).Name);
         }
 
-        public int ReadHalfWord(Register_16_Bit PC)
+        public int ReadHalfWord(R16Bit PC)
         {
             var result = 0;
             result = result & ReadByte(PC++) << 8;
@@ -29,7 +29,7 @@ namespace gameboyEmulator.Memory
             return result;
         }
 
-        public void WriteByte(Register_16_Bit bc, Register_8_Bit register8Bit)
+        public void WriteByte(R16Bit bc, R8Bit register8Bit)
         {
             _memory[bc.Value] = register8Bit.Value;
         }
