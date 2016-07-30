@@ -8,9 +8,5 @@ namespace gameboyEmulator.ROM
 {
     public class CartROM
     {
-        public int Next()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

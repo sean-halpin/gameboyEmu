@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace gameboyEmulator.GUI
 {
-    class GPU
+    class Screen
     {
     }
 }

@@ -1,4 +1,5 @@
 ﻿using gameboyEmulator.ROM;
+using gameboyEmulator.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,11 +30,11 @@ namespace gameboyEmulator.CPU
         //stack pointer
         Register_16_Bit SP;
         //ROM
-        CartROM _cartRom;
+        private MappedMemory _memory;
 
-        public CPU(CartROM currentRom)
+        public CPU(CartROM currentRom, MappedMemory memory)
         {
-            _cartRom = currentRom;
+            _memory = memory;
             //Create Registers
             A = new Register_8_Bit("a");
             F = new Register_8_Bit_Flag("f");
@@ -54,15 +55,15 @@ namespace gameboyEmulator.CPU
         private void BeginExecution()
         {
             while (true)
-                Execute(_cartRom.Next(), this);
+                Execute(_memory.ReadByte(PC));
         }
 
-        private void Execute(int opCode, CPU cPu)
+        private void Execute(int opCode)
         {
             switch (opCode)
             {
                 case 0x00: NOP(F); break;
-                case 0x01: LD_RR_d16(BC, SP, F); break;
+                case 0x01: LD_RR_d16(BC, PC, F); break;
                 case 0x02: LD_RR_r(BC, A, F); break;
                 case 0x03: INC_RR(BC, F); break;
                 case 0x04: INC_r(B, F); break;
@@ -306,99 +307,105 @@ namespace gameboyEmulator.CPU
                 case 0xFB: EI(F); break;
                 case 0xFE: CP_d8(SP, F); break;
                 case 0xFF: RST_num(0x38, F); break;
+                default:
+                    throw new NotImplementedException("OPCODE : 0x" + opCode.ToString("X2"));
             }
         }
 
-        public void ADC_r_d8(Register_8_Bit A, Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void ADC_r_r(Register_8_Bit A, Register_8_Bit B, Register_8_Bit_Flag flag) { }
-        public void ADC_r_RR(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void ADD_r_d8(Register_8_Bit A, Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void ADD_r_r(Register_8_Bit A, Register_8_Bit B, Register_8_Bit_Flag flag) { }
-        public void ADD_r_RR(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void ADD_RR_RR(Register_16_Bit HL, Register_16_Bit BC, Register_8_Bit_Flag flag) { }
-        public void ADD_RR_SP(Register_16_Bit HL, Register_16_Bit SP, Register_8_Bit_Flag flag) { }
-        public void ADD_SP_r8(Register_16_Bit SP, Register_16_Bit r8, Register_8_Bit_Flag flag) { }
-        public void AND_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void AND_r(Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void AND_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void CALL_a16(Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void CALL_Nr_a16(bool NC, Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void CALL_NZ_a16(bool NZ, Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void CALL_r_a16(Register_8_Bit C, Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void CALL_Z_a16(bool Z, Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void CCF(Register_8_Bit_Flag flag) { }
-        public void CP_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void CP_r(Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void CP_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void CPL(Register_8_Bit_Flag flag) { }
-        public void DAA(Register_8_Bit_Flag flag) { }
-        public void DEC_r(Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void DEC_RR(Register_16_Bit BC, Register_8_Bit_Flag flag) { }
-        public void DEC_SP(Register_16_Bit SP, Register_8_Bit_Flag flag) { }
-        public void DI(Register_8_Bit_Flag flag) { }
-        public void EI(Register_8_Bit_Flag flag) { }
-        public void HALT(Register_8_Bit_Flag flag) { }
-        public void INC_r(Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void INC_RR(Register_16_Bit BC, Register_8_Bit_Flag flag) { }
-        public void INC_SP(Register_16_Bit SP, Register_8_Bit_Flag flag) { }
-        public void JP_a16(Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void JP_Nr_a16(bool NC, Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void JP_NZ_a16(bool NZ, Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void JP_r_a16(Register_8_Bit C, Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void JP_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void JP_Z_a16(bool Z, Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void JR(Register_8_Bit_Flag flag) { }
-        public void JR_Nr_r8(bool NC, Register_16_Bit r8, Register_8_Bit_Flag flag) { }
-        public void JR_NZ_r8(bool NZ, Register_16_Bit r8, Register_8_Bit_Flag flag) { }
-        public void JR_r8(Register_16_Bit r8, Register_8_Bit_Flag flag) { }
-        public void JR_Z_r8(bool Z, Register_16_Bit r8, Register_8_Bit_Flag flag) { }
-        public void LD_a16_r(Register_16_Bit a16, Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void LD_a16_SP(Register_16_Bit a16, Register_16_Bit SP, Register_8_Bit_Flag flag) { }
-        public void LD_r_a16(Register_8_Bit A, Register_16_Bit a16, Register_8_Bit_Flag flag) { }
-        public void LD_r_d8(Register_8_Bit A, Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void LD_r_r(Register_8_Bit A, Register_8_Bit B, Register_8_Bit_Flag flag) { }
-        public void LD_r_RR(Register_8_Bit A, Register_16_Bit BC, Register_8_Bit_Flag flag) { }
-        public void LD_r_RRInc(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void LD_r_RRrec(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void LD_RR_d16(Register_16_Bit BC, Register_16_Bit d16, Register_8_Bit_Flag flag) { }
-        public void LD_RR_d8(Register_16_Bit HL, Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void LD_RR_r(Register_16_Bit BC, Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void LD_RR_SP_r8(Register_16_Bit HL, Register_16_Bit SP, Register_16_Bit r8, Register_8_Bit_Flag flag) { }
-        public void LD_RRInc_r(Register_16_Bit HL, Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void LD_RRrec_r(Register_16_Bit HL, Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void LD_SP_d16(Register_16_Bit SP, Register_16_Bit d16, Register_8_Bit_Flag flag) { }
-        public void LD_SP_RR(Register_16_Bit SP, Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void LDH_a8_r(Register_16_Bit a8, Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void LDH_r_a8(Register_8_Bit A, Register_16_Bit a8, Register_8_Bit_Flag flag) { }
-        public void NOP(Register_8_Bit_Flag flag) { }
-        public void OR_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void OR_r(Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void OR_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void POP_RR(Register_16_Bit AF, Register_8_Bit_Flag flag) { }
-        public void PREFIX_CB(int CB, Register_8_Bit_Flag flag) { }
-        public void PUSH_RR(Register_16_Bit AF, Register_8_Bit_Flag flag) { }
-        public void RET(Register_8_Bit_Flag flag) { }
-        public void RET_Nr(bool NC, Register_8_Bit_Flag flag) { }
-        public void RET_NZ(bool NZ, Register_8_Bit_Flag flag) { }
-        public void RET_r(bool C, Register_8_Bit_Flag flag) { }
-        public void RET_Z(bool Z, Register_8_Bit_Flag flag) { }
-        public void RETI(Register_8_Bit_Flag flag) { }
-        public void RLA(Register_8_Bit_Flag flag) { }
-        public void RLCA(Register_8_Bit_Flag flag) { }
-        public void RRA(Register_8_Bit_Flag flag) { }
-        public void RRCA(Register_8_Bit_Flag flag) { }
-        public void RST_num(Int32 num, Register_8_Bit_Flag flag) { }
-        public void SBC_r_d8(Register_8_Bit A, Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void SBC_r_r(Register_8_Bit A, Register_8_Bit B, Register_8_Bit_Flag flag) { }
-        public void SBC_r_RR(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void SCF(Register_8_Bit_Flag flag) { }
-        public void STOP_num(Int32 num, Register_8_Bit_Flag flag) { }
-        public void SUB_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void SUB_r(Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void SUB_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { }
-        public void XOR_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { }
-        public void XOR_r(Register_8_Bit A, Register_8_Bit_Flag flag) { }
-        public void XOR_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { }
+        public void ADC_r_d8(Register_8_Bit A, Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void ADC_r_r(Register_8_Bit A, Register_8_Bit B, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void ADC_r_RR(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void ADD_r_d8(Register_8_Bit A, Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void ADD_r_r(Register_8_Bit A, Register_8_Bit B, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void ADD_r_RR(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void ADD_RR_RR(Register_16_Bit HL, Register_16_Bit BC, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void ADD_RR_SP(Register_16_Bit HL, Register_16_Bit SP, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void ADD_SP_r8(Register_16_Bit SP, Register_16_Bit r8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void AND_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void AND_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void AND_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CALL_a16(Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CALL_Nr_a16(bool NC, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CALL_NZ_a16(bool NZ, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CALL_r_a16(Register_8_Bit C, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CALL_Z_a16(bool Z, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CCF(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CP_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CP_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CP_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void CPL(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void DAA(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void DEC_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void DEC_RR(Register_16_Bit BC, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void DEC_SP(Register_16_Bit SP, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void DI(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void EI(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void HALT(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void INC_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void INC_RR(Register_16_Bit BC, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void INC_SP(Register_16_Bit SP, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JP_a16(Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JP_Nr_a16(bool NC, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JP_NZ_a16(bool NZ, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JP_r_a16(Register_8_Bit C, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JP_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JP_Z_a16(bool Z, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JR(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JR_Nr_r8(bool NC, Register_16_Bit r8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JR_NZ_r8(bool NZ, Register_16_Bit r8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JR_r8(Register_16_Bit r8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void JR_Z_r8(bool Z, Register_16_Bit r8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_a16_r(Register_16_Bit a16, Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_a16_SP(Register_16_Bit a16, Register_16_Bit SP, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_r_a16(Register_8_Bit A, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_r_d8(Register_8_Bit A, Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_r_r(Register_8_Bit A, Register_8_Bit B, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_r_RR(Register_8_Bit A, Register_16_Bit BC, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_r_RRInc(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_r_RRrec(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        //LD BC,d16 3  12 - - - -
+        public void LD_RR_d16(Register_16_Bit BC, Register_16_Bit PC, Register_8_Bit_Flag flag)
+        {
+            BC.Value = _memory.ReadHalfWord(PC);
+        }
+        public void LD_RR_d8(Register_16_Bit HL, Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_RR_r(Register_16_Bit BC, Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_RR_SP_r8(Register_16_Bit HL, Register_16_Bit SP, Register_16_Bit r8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_RRInc_r(Register_16_Bit HL, Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_RRrec_r(Register_16_Bit HL, Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_SP_d16(Register_16_Bit SP, Register_16_Bit d16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LD_SP_RR(Register_16_Bit SP, Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LDH_a8_r(Register_16_Bit a8, Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void LDH_r_a8(Register_8_Bit A, Register_16_Bit a8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void NOP(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void OR_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void OR_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void OR_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void POP_RR(Register_16_Bit AF, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void PREFIX_CB(int CB, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void PUSH_RR(Register_16_Bit AF, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RET(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RET_Nr(bool NC, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RET_NZ(bool NZ, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RET_r(bool C, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RET_Z(bool Z, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RETI(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RLA(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RLCA(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RRA(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RRCA(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void RST_num(Int32 num, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void SBC_r_d8(Register_8_Bit A, Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void SBC_r_r(Register_8_Bit A, Register_8_Bit B, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void SBC_r_RR(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void SCF(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void STOP_num(Int32 num, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void SUB_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void SUB_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void SUB_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void XOR_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void XOR_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        public void XOR_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
     }
 
 }
