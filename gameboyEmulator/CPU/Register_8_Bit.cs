@@ -16,5 +16,11 @@ namespace gameboyEmulator.CPU
             Name = name;
             Value = 0;
         }
+
+        public static Register_8_Bit operator ++(Register_8_Bit reg)
+        {
+            reg.Value++;
+            return reg;
+        }
     }
 }

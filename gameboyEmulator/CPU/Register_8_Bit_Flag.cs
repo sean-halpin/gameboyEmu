@@ -22,5 +22,10 @@ namespace gameboyEmulator.CPU
             else
                 Value &= (byte)~mask;
         }
+
+        public void Update(Register_8_Bit register8Bit, string flagString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

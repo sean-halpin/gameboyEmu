@@ -57,7 +57,6 @@ namespace gameboyEmulator.CPU
         {
             switch (opCode)
             {
-                //NOP 1  4 - - - -
                 case 0x00: NOP(); break;
                 case 0x01: LD_RR_d16(BC, PC); break;
                 case 0x02: LD_RR_r(BC, A); break;
@@ -337,7 +336,12 @@ namespace gameboyEmulator.CPU
         public void DI(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void EI(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void HALT(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
-        public void INC_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        //INC B 1  4 Z 0 H -
+        public void INC_r(Register_8_Bit A, Register_8_Bit_Flag flag)
+        {
+            A++;
+            flag.Update(A, "Z 0 H -");
+        }
         //INC BC 1  8 - - - -
         public void INC_RR(Register_16_Bit BC)
         {
