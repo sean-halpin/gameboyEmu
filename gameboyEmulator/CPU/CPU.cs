@@ -339,8 +339,10 @@ namespace gameboyEmulator.CPU
         //INC B 1  4 Z 0 H -
         public void INC_r(R8Bit A, R8BitFlag flag)
         {
+            flag.HalfCarryFlag = (A.Value & 0x0F) == 0x0F;
             A++;
-            flag.Update(A, "Z 0 H -");
+            flag.ZeroFlag = A.Value == 0;
+            flag.SubFlag = false;
         }
         //INC BC 1  8 - - - -
         public void INC_RR(R16Bit BC)
