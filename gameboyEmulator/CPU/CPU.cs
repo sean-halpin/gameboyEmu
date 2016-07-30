@@ -57,6 +57,7 @@ namespace gameboyEmulator.CPU
         {
             switch (opCode)
             {
+                //NOP 1  4 - - - -
                 case 0x00: NOP(); break;
                 case 0x01: LD_RR_d16(BC, PC); break;
                 case 0x02: LD_RR_r(BC, A); break;
