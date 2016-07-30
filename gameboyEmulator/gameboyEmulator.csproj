@@ -70,8 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CPU\CPU.cs" />
-    <Compile Include="CPU\OpCodes_16_Bit.cs" />
-    <Compile Include="CPU\OpCodes.cs" />
     <Compile Include="CPU\Register_8_Bit.cs" />
     <Compile Include="CPU\Register_16_Bit.cs" />
     <Compile Include="CPU\Register_8_Bit_Flag.cs" />
@@ -82,20 +80,20 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ROM\CartROM.cs" />
-    <Compile Include="Tests\CommonStepDefinitions.cs" />
-    <Compile Include="Tests\OpCodeSkeletonGenerator.feature.cs">
+    <Compile Include="Tests\CodeGeneratorFromOpCodes.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>OpCodeSkeletonGenerator.feature</DependentUpon>
+      <DependentUpon>CodeGeneratorFromOpCodes.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\CommonStepDefinitions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="ROM\SuperMarioLand2-6GoldenCoins%28USA,Europe%29.gb" />
-    <None Include="Tests\OpCodeSkeletonGenerator.feature">
+    <None Include="Tests\CodeGeneratorFromOpCodes.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>OpCodeSkeletonGenerator.feature.cs</LastGenOutput>
+      <LastGenOutput>CodeGeneratorFromOpCodes.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup />

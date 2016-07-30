@@ -24,7 +24,7 @@ namespace gameboyEmulator.Tests
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "OpCodeSkeletonGenerator.feature"
+#line 1 "CodeGeneratorFromOpCodes.feature"
 #line hidden
         
         [NUnit.Framework.TestFixtureSetUpAttribute()]

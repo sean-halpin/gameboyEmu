@@ -49,12 +49,17 @@ namespace gameboyEmulator.Tests
                 }
             }
 
-            var str = new StringBuilder();
+            var strCases = new StringBuilder();
+            var strMethods = new StringBuilder();
+            strCases.AppendLine("switch(opCode){");
             foreach (var opCode in list)
             {
-                str.AppendLine(opCode.toSwitchCase());
-                Debug.WriteLine(opCode.toSwitchCase());
+                strCases.AppendLine(opCode.toSwitchCase());
+                strMethods.AppendLine(opCode.toFunction());
             }
+            strCases.AppendLine(" case default: break;} ");
+            Debug.Write(strCases.ToString());
+            Debug.Write(strMethods.ToString());
         }
 
         private static KeyValuePair<Type, string> ConvertStringToArg(string arg)
@@ -151,37 +156,82 @@ namespace gameboyEmulator.Tests
 
         public string toSwitchCase()
         {
-            string a = "";
-            var argz = args.Select(arg => arg.Key.Name + "_" + arg.Value + "_");
+            string genericMethod = "";
+            string methodArgs = "";
+            var argz = args.Select(arg => /*AbbreviateMethodName(arg.Key.Name) + "_" +*/ FindGenericArg(arg.Value) + "_");
             foreach (var argstring in argz)
             {
-                var genericArg = FindGenericArg(argstring);
-                a += genericArg;
+                var genericArg = (argstring);
+                genericMethod += genericArg;
+            }
+            foreach (var argVariable in args)
+            {
+                methodArgs += ArgConvert(argVariable.Value) + ", ";
             }
             return "case 0x" + _opCodeHex
-                + " : " + method + "_"
-                + a + "() break;";
+                + " : " + (method) + "_"
+                + (genericMethod) + "(" + methodArgs + "F) break;";
         }
 
-        private string FindGenericArg(string argstring)
+        private static string ArgConvert(string value)
+        {
+            return value
+                .Replace("d16", "SP")
+                .Replace("d8", "SP")
+                .Replace("a16", "SP")
+                .Replace("a8", "SP")
+                .Replace("r8", "SP");
+        }
+
+        public string toFunction()
+        {
+            string finalMethodName = "";
+            string functionArguments = "";
+            var methodNamez = args.Select(arg => /*AbbreviateMethodName(arg.Key.Name) + "_" +*/ FindGenericArg(arg.Value) + "_");
+            var functionArgz = args.Select(arg => arg.Key.Name + " " + arg.Value + " ");
+            foreach (var methodName in methodNamez)
+            {
+                var genericArg = (methodName);
+                finalMethodName += genericArg;
+            }
+            foreach (var typeArg in functionArgz)
+            {
+                functionArguments += typeArg + ",";
+            }
+            return "public static void "
+                + (method) + "_"
+                + (finalMethodName) + "(" + functionArguments + " Register_8_Bit_Flag flag) {}";
+        }
+
+        private static string AbbreviateMethodName(string finalMethodName)
+        {
+            return finalMethodName
+                .Replace("Register_8_Bit", "Reg8")
+                .Replace("Register_16_Bit", "Reg16")
+                ;
+        }
+
+        private static string FindGenericArg(string argstring)
         {
             var genericArg = argstring
-                .Replace("AF", "BB")
-                .Replace("BC", "BB")
-                .Replace("DE", "BB")
-                .Replace("HL+", "BB")
-                .Replace("HL-", "BB")
-                .Replace("HL", "BB")
-                .Replace("SP", "BB")
-                .Replace("PC", "BB")
-                .Replace("d16", "BB")
-                .Replace("d8", "BB")
-                .Replace("a16", "BB")
-                .Replace("a8", "BB")
-                .Replace("r8", "BB")
-                .Replace("NZ", "Cond")
-                .Replace("Z", "Cond")
-                .Replace("NC", "Cond")
+                .Replace("AF", "RR")
+                .Replace("BC", "RR")
+                .Replace("DE", "RR")
+                .Replace("+", "Inc")
+                .Replace("-", "Dec")
+                //.Replace("HL+", "BB")
+                //.Replace("HL-", "BB")
+                .Replace("HL", "RR")
+                //.Replace("SP", "BB")
+                //.Replace("PC", "BB")
+                //.Replace("d16", "BB")
+                //.Replace("d8", "BB")
+                //.Replace("a16", "BB")
+                //.Replace("a8", "BB")
+                //.Replace("r8", "BB")
+                //.Replace("NZ", "Cond")
+                //.Replace("Z", "Cond")
+                //.Replace("NC", "Cond")
                 .Replace("00H", "num")
                 .Replace("08H", "num")
                 .Replace("18H", "num")
@@ -192,14 +242,14 @@ namespace gameboyEmulator.Tests
                 .Replace("30H", "num")
                 .Replace("0", "num")
                 .Replace("CB", "CB")
-                .Replace("A", "b")
-                .Replace("B", "b")
-                .Replace("C", "b")
-                .Replace("D", "b")
-                .Replace("E", "b")
-                .Replace("H", "b")
-                .Replace("L", "b")
-                .Replace("F", "b");
+                .Replace("A", "r")
+                .Replace("B", "r")
+                .Replace("C", "r")
+                .Replace("D", "r")
+                .Replace("E", "r")
+                .Replace("H", "r")
+                .Replace("L", "r")
+                .Replace("F", "r");
             return genericArg;
         }
     }
