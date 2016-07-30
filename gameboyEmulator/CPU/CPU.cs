@@ -60,7 +60,7 @@ namespace gameboyEmulator.CPU
                 case 0x00: NOP(); break;
                 case 0x01: LD_RR_d16(BC, PC); break;
                 case 0x02: LD_RR_r(BC, A); break;
-                case 0x03: INC_RR(BC, F); break;
+                case 0x03: INC_RR(BC); break;
                 case 0x04: INC_r(B, F); break;
                 case 0x05: DEC_r(B, F); break;
                 case 0x06: LD_r_d8(B, SP, F); break;
@@ -76,7 +76,7 @@ namespace gameboyEmulator.CPU
                 case 0x10: STOP_num(0, F); break;
                 case 0x11: LD_RR_d16(DE, PC); break;
                 case 0x12: LD_RR_r(DE, A); break;
-                case 0x13: INC_RR(DE, F); break;
+                case 0x13: INC_RR(DE); break;
                 case 0x14: INC_r(D, F); break;
                 case 0x15: DEC_r(D, F); break;
                 case 0x16: LD_r_d8(D, SP, F); break;
@@ -92,7 +92,7 @@ namespace gameboyEmulator.CPU
                 case 0x20: JR_NZ_r8(!F.ZeroFlag, SP, F); break;
                 case 0x21: LD_RR_d16(HL, PC); break;
                 case 0x22: LD_RRInc_r(HL, A, F); break;
-                case 0x23: INC_RR(HL, F); break;
+                case 0x23: INC_RR(HL); break;
                 case 0x24: INC_r(H, F); break;
                 case 0x25: DEC_r(H, F); break;
                 case 0x26: LD_r_d8(H, SP, F); break;
@@ -109,7 +109,7 @@ namespace gameboyEmulator.CPU
                 case 0x31: LD_SP_d16(SP, SP, F); break;
                 case 0x32: LD_RRrec_r(HL, A, F); break;
                 case 0x33: INC_SP(SP, F); break;
-                case 0x34: INC_RR(HL, F); break;
+                case 0x34: INC_RR(HL); break;
                 case 0x35: DEC_RR(HL, F); break;
                 case 0x36: LD_RR_d8(HL, SP, F); break;
                 case 0x37: SCF(F); break;
@@ -337,7 +337,11 @@ namespace gameboyEmulator.CPU
         public void EI(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void HALT(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void INC_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
-        public void INC_RR(Register_16_Bit BC, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        //INC BC 1  8 - - - -
+        public void INC_RR(Register_16_Bit BC)
+        {
+            BC++;
+        }
         public void INC_SP(Register_16_Bit SP, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void JP_a16(Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void JP_Nr_a16(bool NC, Register_16_Bit a16, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
