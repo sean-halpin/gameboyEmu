@@ -15,12 +15,12 @@ namespace gameboyEmulator.CPU
         public bool HalfCarryFlag { get { return (Value & 0x20) != 0; } set { setFlagBit(value, 0x20); } }
         public bool CarryFlag { get { return (Value & 0x10) != 0; } set { setFlagBit(value, 0x10); } }
 
-        private void setFlagBit(bool bit, int mask)
+        private void setFlagBit(bool bit, byte mask)
         {
             if (bit)
                 Value |= mask;
             else
-                Value &= ~mask;
+                Value &= (byte)~mask;
         }
     }
 }

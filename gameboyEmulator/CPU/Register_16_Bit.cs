@@ -21,8 +21,8 @@ namespace gameboyEmulator.CPU
             }
             set
             {
-                h.Value = value & 0xF0;
-                l.Value = value & 0x0F;
+                h.Value = (byte)((value & 0xF0) >> 8);
+                l.Value = (byte)(value & 0x0F);
             }
         }
 

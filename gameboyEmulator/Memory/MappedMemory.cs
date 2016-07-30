@@ -9,6 +9,13 @@ namespace gameboyEmulator.Memory
 {
     public class MappedMemory
     {
+        private byte[] _memory;
+
+        public MappedMemory(byte[] memory)
+        {
+            this._memory = memory;
+        }
+
         public int ReadByte(Register_16_Bit PC)
         {
             throw new NotImplementedException(typeof(MappedMemory).Name);
@@ -20,6 +27,11 @@ namespace gameboyEmulator.Memory
             result = result & ReadByte(PC++) << 8;
             result = result & ReadByte(PC++);
             return result;
+        }
+
+        public void WriteByte(Register_16_Bit bc, Register_8_Bit register8Bit)
+        {
+            _memory[bc.Value] = register8Bit.Value;
         }
     }
 }

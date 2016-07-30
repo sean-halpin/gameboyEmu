@@ -9,7 +9,7 @@ namespace gameboyEmulator.CPU
     public class Register_8_Bit
     {
         public string Name { get; set; }
-        public int Value { get; set; }
+        public byte Value { get; set; }
 
         public Register_8_Bit(string name)
         {

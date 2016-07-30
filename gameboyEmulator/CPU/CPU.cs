@@ -1,10 +1,5 @@
-﻿using gameboyEmulator.ROM;
-using gameboyEmulator.Memory;
+﻿using gameboyEmulator.Memory;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace gameboyEmulator.CPU
 {
@@ -32,7 +27,7 @@ namespace gameboyEmulator.CPU
         //ROM
         private MappedMemory _memory;
 
-        public CPU(CartROM currentRom, MappedMemory memory)
+        public CPU(MappedMemory memory)
         {
             _memory = memory;
             //Create Registers
@@ -62,9 +57,9 @@ namespace gameboyEmulator.CPU
         {
             switch (opCode)
             {
-                case 0x00: NOP(F); break;
-                case 0x01: LD_RR_d16(BC, PC, F); break;
-                case 0x02: LD_RR_r(BC, A, F); break;
+                case 0x00: NOP(); break;
+                case 0x01: LD_RR_d16(BC, PC); break;
+                case 0x02: LD_RR_r(BC, A); break;
                 case 0x03: INC_RR(BC, F); break;
                 case 0x04: INC_r(B, F); break;
                 case 0x05: DEC_r(B, F); break;
@@ -79,8 +74,8 @@ namespace gameboyEmulator.CPU
                 case 0x0E: LD_r_d8(C, SP, F); break;
                 case 0x0F: RRCA(F); break;
                 case 0x10: STOP_num(0, F); break;
-                case 0x11: LD_RR_d16(DE, SP, F); break;
-                case 0x12: LD_RR_r(DE, A, F); break;
+                case 0x11: LD_RR_d16(DE, PC); break;
+                case 0x12: LD_RR_r(DE, A); break;
                 case 0x13: INC_RR(DE, F); break;
                 case 0x14: INC_r(D, F); break;
                 case 0x15: DEC_r(D, F); break;
@@ -95,7 +90,7 @@ namespace gameboyEmulator.CPU
                 case 0x1E: LD_r_d8(E, SP, F); break;
                 case 0x1F: RRA(F); break;
                 case 0x20: JR_NZ_r8(!F.ZeroFlag, SP, F); break;
-                case 0x21: LD_RR_d16(HL, SP, F); break;
+                case 0x21: LD_RR_d16(HL, PC); break;
                 case 0x22: LD_RRInc_r(HL, A, F); break;
                 case 0x23: INC_RR(HL, F); break;
                 case 0x24: INC_r(H, F); break;
@@ -174,14 +169,14 @@ namespace gameboyEmulator.CPU
                 case 0x6D: LD_r_r(L, L, F); break;
                 case 0x6E: LD_r_RR(L, HL, F); break;
                 case 0x6F: LD_r_r(L, A, F); break;
-                case 0x70: LD_RR_r(HL, B, F); break;
-                case 0x71: LD_RR_r(HL, C, F); break;
-                case 0x72: LD_RR_r(HL, D, F); break;
-                case 0x73: LD_RR_r(HL, E, F); break;
-                case 0x74: LD_RR_r(HL, H, F); break;
-                case 0x75: LD_RR_r(HL, L, F); break;
+                case 0x70: LD_RR_r(HL, B); break;
+                case 0x71: LD_RR_r(HL, C); break;
+                case 0x72: LD_RR_r(HL, D); break;
+                case 0x73: LD_RR_r(HL, E); break;
+                case 0x74: LD_RR_r(HL, H); break;
+                case 0x75: LD_RR_r(HL, L); break;
                 case 0x76: HALT(F); break;
-                case 0x77: LD_RR_r(HL, A, F); break;
+                case 0x77: LD_RR_r(HL, A); break;
                 case 0x78: LD_r_r(A, B, F); break;
                 case 0x79: LD_r_r(A, C, F); break;
                 case 0x7A: LD_r_r(A, D, F); break;
@@ -364,12 +359,16 @@ namespace gameboyEmulator.CPU
         public void LD_r_RRInc(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void LD_r_RRrec(Register_8_Bit A, Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         //LD BC,d16 3  12 - - - -
-        public void LD_RR_d16(Register_16_Bit BC, Register_16_Bit PC, Register_8_Bit_Flag flag)
+        public void LD_RR_d16(Register_16_Bit BC, Register_16_Bit PC)
         {
             BC.Value = _memory.ReadHalfWord(PC);
         }
         public void LD_RR_d8(Register_16_Bit HL, Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
-        public void LD_RR_r(Register_16_Bit BC, Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        //LD (BC),A 1  8 - - - -
+        public void LD_RR_r(Register_16_Bit BC, Register_8_Bit A)
+        {
+            _memory.WriteByte(BC, A);
+        }
         public void LD_RR_SP_r8(Register_16_Bit HL, Register_16_Bit SP, Register_16_Bit r8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void LD_RRInc_r(Register_16_Bit HL, Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void LD_RRrec_r(Register_16_Bit HL, Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
@@ -377,7 +376,8 @@ namespace gameboyEmulator.CPU
         public void LD_SP_RR(Register_16_Bit SP, Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void LDH_a8_r(Register_16_Bit a8, Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void LDH_r_a8(Register_8_Bit A, Register_16_Bit a8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
-        public void NOP(Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
+        //NOP 1  4 - - - -
+        public void NOP() { }
         public void OR_d8(Register_16_Bit d8, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void OR_r(Register_8_Bit A, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
         public void OR_RR(Register_16_Bit HL, Register_8_Bit_Flag flag) { throw new NotImplementedException(); }
