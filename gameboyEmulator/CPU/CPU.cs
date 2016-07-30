@@ -73,7 +73,7 @@ namespace gameboyEmulator.CPU
                 case 0x0D: DEC_r(C, F); break;
                 case 0x0E: LD_r_d8(C, SP, F); break;
                 case 0x0F: RRCA(F); break;
-                case 0x10: STOP_num(0, F); break;
+                case 0x10: STOP(0, F); break;
                 case 0x11: LD_RR_d16(DE, PC); break;
                 case 0x12: LD_RR_r(DE, A); break;
                 case 0x13: INC_RR(DE); break;
@@ -410,7 +410,8 @@ namespace gameboyEmulator.CPU
         public void SBC_r_r(R8Bit A, R8Bit B, R8BitFlag flag) { throw new NotImplementedException(); }
         public void SBC_r_RR(R8Bit A, R16Bit HL, R8BitFlag flag) { throw new NotImplementedException(); }
         public void SCF(R8BitFlag flag) { throw new NotImplementedException(); }
-        public void STOP_num(Int32 num, R8BitFlag flag) { throw new NotImplementedException(); }
+        //STOP 0 2  4 - - - -
+        public void STOP(Int32 num) { }
         public void SUB_d8(R16Bit d8, R8BitFlag flag) { throw new NotImplementedException(); }
         public void SUB_r(R8Bit A, R8BitFlag flag) { throw new NotImplementedException(); }
         public void SUB_RR(R16Bit HL, R8BitFlag flag) { throw new NotImplementedException(); }
