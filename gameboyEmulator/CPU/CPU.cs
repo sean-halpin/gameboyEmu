@@ -73,7 +73,7 @@ namespace gameboyEmulator.CPU
                 case 0x0D: DEC_r(C, F); break;
                 case 0x0E: LD_r_d8(C, SP, F); break;
                 case 0x0F: RRCA(F); break;
-                case 0x10: STOP(0, F); break;
+                case 0x10: STOP(0); break;
                 case 0x11: LD_RR_d16(DE, PC); break;
                 case 0x12: LD_RR_r(DE, A); break;
                 case 0x13: INC_RR(DE); break;
@@ -193,14 +193,14 @@ namespace gameboyEmulator.CPU
                 case 0x85: ADD_r_r(A, L, F); break;
                 case 0x86: ADD_r_RR(A, HL, F); break;
                 case 0x87: ADD_r_r(A, A, F); break;
-                case 0x88: ADC_r_r(A, B, F); break;
-                case 0x89: ADC_r_r(A, C, F); break;
-                case 0x8A: ADC_r_r(A, D, F); break;
-                case 0x8B: ADC_r_r(A, E, F); break;
-                case 0x8C: ADC_r_r(A, H, F); break;
-                case 0x8D: ADC_r_r(A, L, F); break;
+                case 0x88: AddWithCarry(A, B, F); break;
+                case 0x89: AddWithCarry(A, C, F); break;
+                case 0x8A: AddWithCarry(A, D, F); break;
+                case 0x8B: AddWithCarry(A, E, F); break;
+                case 0x8C: AddWithCarry(A, H, F); break;
+                case 0x8D: AddWithCarry(A, L, F); break;
                 case 0x8E: ADC_r_RR(A, HL, F); break;
-                case 0x8F: ADC_r_r(A, A, F); break;
+                case 0x8F: AddWithCarry(A, A, F); break;
                 case 0x90: SUB_r(B, F); break;
                 case 0x91: SUB_r(C, F); break;
                 case 0x92: SUB_r(D, F); break;
@@ -263,7 +263,7 @@ namespace gameboyEmulator.CPU
                 case 0xCB: PREFIX_CB(0, F); break;
                 case 0xCC: CALL_Z_a16(F.ZeroFlag, SP, F); break;
                 case 0xCD: CALL_a16(SP, F); break;
-                case 0xCE: ADC_r_d8(A, SP, F); break;
+                case 0xCE: AddImmediateWithCarry(A, SP, F); break;
                 case 0xCF: RST_num(0x08, F); break;
                 case 0xD0: RET_Nr(!F.CarryFlag, F); break;
                 case 0xD1: POP_RR(DE, F); break;
@@ -306,10 +306,34 @@ namespace gameboyEmulator.CPU
                     throw new NotImplementedException("OPCODE : 0x" + opCode.ToString("X2"));
             }
         }
-
-        public void ADC_r_d8(R8Bit A, R16Bit d8, R8BitFlag flag) { throw new NotImplementedException(); }
-        public void ADC_r_r(R8Bit A, R8Bit B, R8BitFlag flag) { throw new NotImplementedException(); }
-        public void ADC_r_RR(R8Bit A, R16Bit HL, R8BitFlag flag) { throw new NotImplementedException(); }
+        //ADC A,d8 2  8 Z 0 H C
+        public void AddImmediateWithCarry(R8Bit A, R16Bit PC, MappedMemory memory, R8BitFlag flag)
+        {
+            byte immediate = memory.ReadByte(PC);
+            byte carry = (byte)(flag.CarryFlag ? 1 : 0);
+            flag.HalfCarryFlag = ((A.Value & 0x0F) + (B.Value & 0x0F) + carry) > 0x0F;
+            var result = A.Value + B.Value + carry;
+            flag.CarryFlag = result > 255;
+            A.Value = (byte)result;
+            flag.SubFlag = false;
+            flag.ZeroFlag = A.Value == 0;
+        }
+        //ADC A, B 1  4 Z 0 H C
+        public void AddWithCarry(R8Bit A, R8Bit B, R8BitFlag flag)
+        {
+            byte carry = (byte)(flag.CarryFlag ? 1 : 0);
+            flag.HalfCarryFlag = ((A.Value & 0x0F) + (B.Value & 0x0F) + carry) > 0x0F;
+            var result = A.Value + B.Value + carry;
+            flag.CarryFlag = result > 255;
+            A.Value = (byte)result;
+            flag.SubFlag = false;
+            flag.ZeroFlag = A.Value == 0;
+        }
+        //ADC A,(HL) 1  8 Z 0 H C
+        public void AddWithCarryHL(R8Bit A, R16Bit HL, MappedMemory memory, R8BitFlag flag)
+        {
+            AddImmediateWithCarry(A, HL, memory, flag);
+        }
         public void ADD_r_d8(R8Bit A, R16Bit d8, R8BitFlag flag) { throw new NotImplementedException(); }
         public void ADD_r_r(R8Bit A, R8Bit B, R8BitFlag flag) { throw new NotImplementedException(); }
         public void ADD_r_RR(R8Bit A, R16Bit HL, R8BitFlag flag) { throw new NotImplementedException(); }
@@ -421,4 +445,6 @@ namespace gameboyEmulator.CPU
     }
 
 }
+
+
 
